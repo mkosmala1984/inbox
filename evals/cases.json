@@ -445,10 +445,7 @@
       {
         "open": "f4"
       }
-    ],
-    "min": {
-      "codex": 0.4
-    }
+    ]
   },
   {
     "name": "credentials-command-is-terminal",

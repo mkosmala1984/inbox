@@ -3,21 +3,3 @@
 
 # Throwaway scripts that import the mod's code, so they live inside the repo
 .scratch/
-
-# The Codex plugin's tools and test bundles; its plugin/dist bundles are committed
-codex/node_modules/
-codex/test-dist/
-
-# The tab page `npm --prefix codex run dev` keeps built
-codex/.dev/
-
-# The launch video's tools, renders and captured stills, which its scripts make again
-launch-video/node_modules/
-launch-video/out/
-launch-video/public/stills/
-launch-video/takes/
-launch-video/public/takes/
-# Music licensed for the post, not for sharing in this repo
-launch-video/public/music/
-# App icons copied from the installed apps, which are their makers' trademarks
-launch-video/public/icons/

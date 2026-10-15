@@ -12,7 +12,7 @@ export type ClientTab = {
   id: string
   label: string
   count: number
-  /** The count's color, the tab's own tone, as in the terminal and Codex. */
+  /** The count's color, the tab's own tone, as in the terminal. */
   countColor: string
   width: number
 }

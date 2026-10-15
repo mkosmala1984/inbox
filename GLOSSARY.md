@@ -2,7 +2,7 @@
 
 The inbox gathers what an agent session needs from the person, and what the
 agent noticed along the way, into one place beside the conversation. The agent
-is Claude, in Claude Code, or Codex.
+is Claude, in Claude Code.
 
 ## Language
 
@@ -34,11 +34,11 @@ _Avoid_: note
 **Band**:
 In Claude Code, the line above the prompt with the Needs you and Findings
 counts and [Open inbox]. When the session stops, a second line says why, with
-[Resume] after an API error. Codex has no band.
+[Resume] after an API error.
 
 **Pane**:
 The `/inbox` panel beside the conversation in Claude Code, with its Needs
-you, Findings and PRs tabs. Codex shows the same tabs in its Inbox tab.
+you, Findings and PRs tabs.
 
 **Card**:
 The short summary of where the session stands: its goal, what's done, and
@@ -59,23 +59,22 @@ open". Each keeps only its latest.
 ### Looks and hosts
 
 **Look**:
-One of the three ways the inbox is drawn: `terminal` in the Claude Code
-terminal, `desktop` in the pane of the Claude desktop app's Code sessions, and
-`codex` in the Codex tab. `Look` in `hooks/view.ts`.
+One of the two ways the inbox is drawn: `terminal` in the Claude Code
+terminal and `desktop` in the pane of the Claude desktop app's Code sessions.
+`Look` in `hooks/view.ts`.
 _Avoid_: client, surface
 
 **Host**:
-The program that runs the inbox code. Claude Code runs the mod, which draws
-the terminal and desktop looks. Codex runs the plugin, which draws the Codex
-tab.
+The program that runs the inbox code: Claude Code, which runs the mod and
+draws the terminal and desktop looks.
 
 **Shared module**:
-A file in `hooks/` that both hosts import. It imports nothing from the engine
-or from either host.
+A file in `hooks/` that holds rules, not drawing. It imports nothing from the
+engine.
 
 **Adapter**:
 The code that draws the shared view in one look: `hooks/register.tsx` for the
-terminal and desktop looks, `codex/src/tab.tsx` for the Codex tab.
+terminal and desktop looks.
 
 **Difference on purpose**:
 A behavior that differs between looks because one look cannot do something,

@@ -1,6 +1,5 @@
-// Which rows are new to a look, and where it moves for them. The pane and the
-// Codex tab both follow these rules, each with its own tabs and its own rule
-// for when a tab shows only its empty text. Pure, and imports nothing from the engine.
+// Which rows are new to a look, and where it moves for them. The pane follows
+// these rules, with its own rule for when a tab shows only its empty text. Pure, and imports nothing from the engine.
 
 /** Each tab's row ids as last recorded. A tab with no record yet has none. */
 export type RowRecord<T extends string> = Partial<Record<T, ReadonlySet<string>>>

@@ -1,6 +1,6 @@
 /**
- * The status colors every inbox surface draws: the terminal's dark and light themes, the Codex tab's CSS, which
- * codex/build.mjs writes from these, and the Claude desktop pane's Svg marks. Each meets its contrast only on the
+ * The status colors every inbox surface draws: the terminal's dark and light themes and the Claude desktop pane's
+ * Svg marks. Each meets its contrast only on the
  * pane, cards, selected tab and selected row of the appearance it names.
  */
 
@@ -9,7 +9,7 @@ export type ToneName = 'needsYou' | 'issue' | 'findings' | 'prs' | 'done' | 'err
 export type ToneSet = Record<ToneName, string> & {
   /** A marker in the error color. A marker needs only 3:1, so in dark it takes a stronger red than text could. */
   errorMark: string
-  /** A key's letter, and the Codex tab's focus ring. */
+  /** A key's letter. */
   key: string
 }
 

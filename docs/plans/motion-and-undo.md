@@ -35,7 +35,7 @@ When the system asks for reduced motion, every duration is 0, and Undo's fill st
    - **The line never moves.** Open and closed rows have the same padding, and the title keeps its weight, because a bolder title rewraps the line. The open row is marked by its fill and its panel. The kind label, as "Opportunity", moves into the panel, under the line.
 
    Reason: the old open row replaced the line with a block that put the kind label above the title, so the title jumped down a line, and closing removed the content at once, so the row shrank around an empty space.
-3. **A row closes by a press.** The settled line replaces the row's line, and the panel stays under it while the row's height shrinks to the settled line. [codex-row-states.md](codex-row-states.md) has every row state and move.
+3. **A row closes by a press.** The settled line replaces the row's line, and the panel stays under it while the row's height shrinks to the settled line.
 4. **A settled row leaves.** It fades and its height collapses, 200 ms, and only then is it removed. The rows below slide up.
 5. **The Closed fold opens or closes.** The closed list's height moves. Its chevron switches from right to down at once, with no turn.
 6. **The field opens.** The field and its buttons fade in where the follow-ups were.

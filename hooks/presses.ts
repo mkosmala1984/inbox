@@ -248,7 +248,7 @@ function upgradedLastAction(key: string, old: Omit<LastAction, 'kind'> & { isHan
     kind: isHandedOff ? 'handoff' : 'talk',
     action,
     // Earlier builds saved "Explain sent" or "Sent to Claude to fix"; a last action is now the label pressed.
-    text: /^Sent to (Claude|Codex) to /.test(old.text) ? 'Address' : old.text.replace(/ sent$/, ''),
+    text: /^Sent to Claude to /.test(old.text) ? 'Address' : old.text.replace(/ sent$/, ''),
   }
 }
 

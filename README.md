@@ -2,17 +2,15 @@
 
 The inbox gathers what waits on you in an agent session into one organized
 place beside the conversation: the agent's questions, tasks only you can do,
-issues and ideas it noticed, and your PRs. An agent here means Claude or
-Codex. The inbox runs in three places:
+issues and ideas it noticed, and your PRs. The agent is Claude. The inbox
+runs in two places:
 
 - **Claude Code in the terminal**, as a mod. Type `/inbox`.
 - **Code sessions in the Claude desktop app**, as the same mod, in a pane
   beside the conversation.
-- **Codex in the ChatGPT desktop app**, as a plugin, in an Inbox tab in the
-  side panel.
 
 Each place draws the inbox in its host app's own style. The rules are the
-same in all three.
+same in both.
 
 
 
@@ -49,29 +47,11 @@ claude plugin update inbox
 - It makes one Sonnet call after each of Claude's replies. See [Cost](#cost).
 - It was built and tested with Claude Code 2.1.300.
 
-### Codex
-
-```sh
-codex plugin marketplace add petekp/inbox
-codex plugin add inbox@inbox
-```
-
-Then, in the ChatGPT desktop app, trust the plugin's hooks: click the hook icon
-beside the prompt's approval setting, then Allow all. Codex runs a plugin's
-hooks only after you trust them. To open the inbox, press + at the top right
-of the window, then choose More tools, then Inbox.
-
-[codex/README.md](codex/README.md) covers updating and running the `codex`
-command from inside the app.
-
-### For both
-
 The PRs tab needs the GitHub CLI, `gh`, signed in.
 
 ## Using it
 
-Type `/inbox` in Claude Code, or open the Inbox tab in the ChatGPT app. The
-inbox has three tabs:
+Type `/inbox` in Claude Code. The inbox has three tabs:
 
 - **Needs you**: questions the agent asked you, and tasks only you can do.
 - **Findings**: bugs, risks and ideas the agent noticed outside the task it's
@@ -94,12 +74,10 @@ inbox switches to it.
 - **Claude desktop app:** you click. `/inbox` sent as the first message of a
   new session is not recognized as a command. Send it after the first
   message.
-- **ChatGPT app:** you click, or press the same keys as in the terminal. The
-  tab shows no letters.
 
 In Claude Code, a line above your prompt counts what needs you and the
 findings waiting, with a button that opens the panel. When Claude stops on an
-error, the stop shows on a second line. The ChatGPT app has no such line.
+error, the stop shows on a second line.
 
 To see every part with sample items in Claude Code, run `/inbox demo`. Presses
 on them change only the samples and send nothing. Press Hide demo, or run the
@@ -120,15 +98,7 @@ In one long Opus session, this came to about 1% of the total cost. A shorter
 or cheaper session pays a larger share. On a Claude plan, these count toward
 your usage limits.
 
-In Codex, the update after each reply runs through the `codex` binary inside
-the desktop app, with your Codex sign-in. It uses about 16,000 input tokens
-per reply, most of them the base instructions every `codex exec` call
-includes. It counts toward your plan's usage.
-
 ## What it runs, sends and changes
-
-This covers the Claude Code mod. [codex/README.md](codex/README.md) covers
-the Codex plugin.
 
 **What leaves your machine.** Three things, and nothing else:
 
@@ -192,7 +162,7 @@ plugin storage on this machine.
 ## Developing
 
 Read [AGENTS.md](AGENTS.md) first. [docs/looks.md](docs/looks.md) says which
-file owns each rule and where the three apps differ on purpose.
+file owns each rule and where the two looks differ on purpose.
 
 Run the mod from a clone:
 
@@ -202,17 +172,7 @@ claude --plugin-dir /path/to/inbox
 
 The session reloads the mod when you change one of its files.
 
-The Codex plugin shares the rules in `hooks/` with the mod. Rebuild its
-bundles after changing either:
-
-```sh
-npm --prefix codex ci         # once
-npm --prefix codex run build
-```
-
-[codex/README.md](codex/README.md) covers trying a build in Codex.
-
 `./scripts/check.sh` runs Prettier, `claude plugin validate`, a type check and
-the tests, and checks the Codex bundles are current. The type check needs the
+the tests. The type check needs the
 types Claude Code writes to `.claude-plugin/types/` the first time it loads
 the mod.

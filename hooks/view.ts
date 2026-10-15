@@ -1,6 +1,6 @@
 // The inbox as every host draws it: the Needs you order and count, question
 // handles, which rows are handed off or just closed, and the item status. The band, the pane,
-// the sidebar line, row navigation and the Codex tab all read this, so they agree.
+// the sidebar line and row navigation all read this, so they agree.
 // Pure: it reads only its arguments, and imports nothing from the engine.
 
 import type {
@@ -84,12 +84,12 @@ export type ViewInput = {
   ledger: Ledger
   /** Each row's last press, by row id. */
   lastActions: Record<string, LastAction>
-  /** Each row's latest note, by row id. Codex keeps its notes in the tab and passes {}. */
+  /** Each row's latest note, by row id. */
   notes: Record<string, RowNote>
   turns: Turns
   /** Per item id, steps a host adds beyond the item's own helps: the mod's "Open PR #N". */
   extraSteps: Record<string, HelpStep[]>
-  /** How long after a close the view still lists the row as settled. The mod passes SETTLED_MS; Codex adds two polls. */
+  /** How long after a close the view still lists the row as settled. The mod passes SETTLED_MS. */
   settleWindowMs: number
   status: ItemStatus
   now: number
@@ -126,11 +126,9 @@ export type Feedback =
 
 /**
  * How the inbox is drawn, which decides some of its words: the mod in the Claude Code terminal or the desktop
- * app's pane, or the Codex tab. GLOSSARY.md defines it.
+ * app's pane. GLOSSARY.md defines it.
  */
-export type Look = 'terminal' | 'desktop' | 'codex'
-/** The looks the mod draws. */
-export type ModLook = Exclude<Look, 'codex'>
+export type Look = 'terminal' | 'desktop'
 
 export type ActionView = {
   press: RowPress
@@ -150,7 +148,7 @@ export type ActionView = {
 export type RowView = {
   id: string
   type: 'question' | 'task' | 'finding'
-  /** "1)" for a question a typed number answers now, "•" for any other row. Codex's tool results quote it. */
+  /** "1)" for a question a typed number answers now, "•" for any other row. */
   handle: string
   title: string
   at: number | null
@@ -381,7 +379,7 @@ export const TABS: readonly { id: Tab; label: string; hotkey: string }[] = [
 /** The tabs whose rows come from the ledger. The PRs tab's rows come from GitHub. */
 export const ROW_TABS = TABS.filter((t): t is (typeof TABS)[number] & { id: 'needsYou' | 'findings' } => t.id !== 'prs')
 
-/** What an empty tab says, with the agent named, as "Claude" or "Codex". */
+/** What an empty tab says, with the agent named, as "Claude". */
 export function emptyText(tab: 'needsYou' | 'findings', agent: string): { title: string; hint: string } {
   return tab === 'needsYou'
     ? { title: 'Nothing needs you.', hint: `${agent}'s questions and the tasks only you can do show up here.` }

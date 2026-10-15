@@ -1,6 +1,6 @@
 // The mod: the host and the adapter for the terminal and desktop looks. It owns the engine hooks, the atoms,
 // the press runner, the PR presses and fetches, the band above the prompt and the /inbox pane. Rules shared
-// with the Codex tab live in view.ts, presses.ts, arrivals.ts, ledger.ts, prs.ts, tools.ts, demo.ts and layout.ts;
+// with other surfaces live in view.ts, presses.ts, arrivals.ts, ledger.ts, prs.ts, tools.ts, demo.ts and layout.ts;
 // this file only draws them. See GLOSSARY.md for the terms and docs/looks.md for who owns each rule.
 //
 // Find a section by searching for:
@@ -166,7 +166,7 @@ import {
   rowAfterClose,
   shortAgo,
 } from './view'
-import type { DrawnEntry, InboxView, ModLook, PlannedKey, RowView, RowWait } from './view'
+import type { DrawnEntry, InboxView, Look, PlannedKey, RowView, RowWait } from './view'
 import {
   CLOSE_DESCRIPTION,
   CLOSE_SCHEMA,
@@ -284,7 +284,7 @@ function undoSvg(fraction: number, leftMs: number): string {
 /**
  * Desktop text in a status color, as an Svg one line tall and `cells` wide. Text draws one color in both
  * appearances, which the mod cannot read, but an Svg follows the system's light or dark setting, so this takes the
- * shared tone for each, as the Codex tab does. It draws `mark`, then `label` two columns on, as a row's mark column
+ * shared tone for each. It draws `mark`, then `label` two columns on, as a row's mark column
  * and text sit; either may be ''.
  */
 function toneSvg(tone: ToneName, mark: string, label: string, cells: number): string {
@@ -593,11 +593,11 @@ const DESKTOP_PALETTE: Palette = {
  * The look the mod draws for an engine surface. Mobile and VS Code get the terminal look, which nobody has checked
  * there: docs/reference/claude-desktop-app.md records what is known about those surfaces.
  */
-function lookOf(surface: RenderSurface): ModLook {
+function lookOf(surface: RenderSurface): Look {
   return surface === 'desktop' ? 'desktop' : 'terminal'
 }
 /** The palette for a Claude Code theme in the terminal. The desktop app's palette follows the app instead. */
-function paletteFor(theme: string, look: ModLook): Palette {
+function paletteFor(theme: string, look: Look): Palette {
   return look === 'desktop' ? DESKTOP_PALETTE : (PALETTES[theme] ?? THEME_KEY_PALETTE)
 }
 // The blank columns on each side of a docked tab's name, which a click there also selects. A pane too narrow
@@ -692,7 +692,7 @@ function focusHintFor(element: string): string | null {
  */
 const followUpPresses = new Map<string, (press: UiPressArgument) => void>()
 /** Which look the pane last drew in, for the redraws a timer runs. */
-let paneLook: ModLook = 'terminal'
+let paneLook: Look = 'terminal'
 
 /** Every Button and Input key in a drawn tree: the keys the focus can move to. */
 function focusKeys(node: unknown, keys = new Set<string>()): Set<string> {
@@ -1088,7 +1088,7 @@ function queueUpdate($: EngineInterface, next: { ex: Exchange; turnsStarted: num
     )
     if (at !== conversation) return
     // An exchange covers the turns started by its end; a catch-up, those started before it ran. A failed update
-    // counts too, as Codex's does: the reply has ended, so a row waiting on it stops reading "Explaining…". The
+    // counts too: the reply has ended, so a row waiting on it stops reading "Explaining…". The
     // failed state still runs a catch-up.
     const applied = next?.turnsStarted ?? turnsStarted
     await update($, PRESENCE, p => ({
@@ -2139,7 +2139,7 @@ function stepIcon(step: HelpStep | undefined): string | undefined {
 /** A question, task or finding's keys, in the order `rowKeyPlan` sets, as the pane's actions. */
 function rowKeyActions(
   $: EngineInterface,
-  look: ModLook,
+  look: Look,
   r: RowView,
   isAllShown: boolean,
 ): { keys: KeyAction[]; more: KeyAction[]; hidden: KeyAction[] } {
@@ -4625,7 +4625,7 @@ export const register: Register = on => {
     // closed items. It cannot be selected. `undo` is that press. An answer
     // whose message has not reached Claude reads "Queued: <answer>" instead. A
     // lapsed close, such as Dismissed, Expired or one by Claude, reads muted.
-    // Undo on a row that just closed, with a fill that drains as its time runs out, as the Codex tab's does. The
+    // Undo on a row that just closed, with a fill that drains as its time runs out. The
     // terminal redraws it on the steps the leave bar already takes. Desktop's native button draws no fill, so there
     // it is an Svg pill whose fill animates on its own, under a Client that takes its clicks.
     const undoButton = (undo: RowPress | PrPress, at: number) => {
@@ -4675,7 +4675,7 @@ export const register: Register = on => {
       isLapsed = false,
     ) => {
       if (look === 'desktop') {
-        // As the Codex tab draws it: the ask, its outcome muted after it, wrapping together, and Undo at the right.
+        // The ask, its outcome muted after it, wrapping together, and Undo at the right.
         const after = `${DOT}${isQueued ? `Queued: ${outcome}` : outcome}`
         return (
           <Box flexDirection="column">

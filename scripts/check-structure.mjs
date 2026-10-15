@@ -1,6 +1,5 @@
-// Checks the boundaries that keep the three looks in step, which no type check or test reads:
-// - A shared module imports only other shared modules and `types/`, so both hosts can bundle it.
-// - The Codex plugin imports only shared modules from `hooks/`.
+// Checks what no type check or test reads:
+// - A shared module imports only other shared modules and `types/`, so rules stay apart from drawing.
 // - Every plan says whether it is proposed, building, built or superseded.
 // - Every repo path and relative link in the docs names a file that exists.
 // - Every `file:symbol` in docs/looks.md names a file that has that symbol.
@@ -14,10 +13,9 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-/** The shared modules: the files in hooks/ that both hosts import. GLOSSARY.md defines them. */
+/** The shared modules: the files in hooks/ that hold rules, not drawing. GLOSSARY.md defines them. */
 const SHARED = ['arrivals', 'demo', 'inline', 'layout', 'ledger', 'pr-tab', 'presses', 'prs', 'tools', 'view']
-// hooks/ledger.ts imports a type from the engine. It is erased from the bundle, but the Codex type check then
-// needs the types only an interactive Claude session writes. Step 5 of docs/plans/three-looks.md moves it out.
+// hooks/ledger.ts imports a type from the engine.
 const ENGINE_TYPE_IMPORTS = ['ledger']
 const PLAN_STATUS = /^Status: (proposed|building|built|superseded by \S+)/m
 
@@ -48,24 +46,9 @@ function checkShared() {
   }
 }
 
-function checkCodex() {
-  const dirs = ['codex/src', 'codex/tests']
-  for (const dir of dirs)
-    for (const file of readdirSync(join(ROOT, dir)).filter(f => /\.tsx?$/.test(f))) {
-      const path = `${dir}/${file}`
-      for (const { from } of importsOf(read(path))) {
-        const hook = from.match(/^\.\.\/\.\.\/hooks\/([\w-]+)$/)?.[1]
-        if (hook && !SHARED.includes(hook))
-          errors.push(
-            `${path} imports hooks/${hook}, which is not a shared module. Codex can only bundle shared modules.`,
-          )
-      }
-    }
-}
-
 /** The markdown files whose links and paths must resolve. */
 function docFiles() {
-  const files = ['README.md', 'AGENTS.md', 'GLOSSARY.md', 'ROADMAP.md', 'codex/README.md'].filter(exists)
+  const files = ['README.md', 'AGENTS.md', 'GLOSSARY.md', 'ROADMAP.md']
   const walk = dir => {
     for (const entry of readdirSync(join(ROOT, dir))) {
       const path = `${dir}/${entry}`
@@ -126,7 +109,6 @@ function checkLookMap() {
 }
 
 checkShared()
-checkCodex()
 checkDocs()
 checkLookMap()
 

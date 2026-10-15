@@ -1,4 +1,4 @@
-// Sizes the Claude app pane and the Codex tab share, so the two looks draw rows alike.
+// Sizes of the Claude app pane's rows.
 
-/** The padding above and below a row's text, in points. The Codex tab's CSS pixels are points on macOS. */
+/** The padding above and below a row's text, in points. */
 export const ROW_PAD_PT = 8
