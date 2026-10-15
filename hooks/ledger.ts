@@ -113,12 +113,12 @@ const NEEDS_PERSON =
   /(?:^|[\s;&|])(?:login|logout|signin|sign-in|sudo|passwd|ssh-add|ssh-keygen)(?=[\s:]|$)|\binit --interactive\b/i
 
 /**
- * Words a reply uses when only the person can run a command: their credentials, device or account. The inbox
- * model sometimes marks a command the reply merely asks the person to run as theirs, so a terminal step in a
- * reply with none of these words is the agent's to run.
+ * Words a reply uses when only the person can run a command: their credentials, device or account, in English
+ * or Polish. The inbox model sometimes marks a command the reply merely asks the person to run as theirs, so a
+ * terminal step in a reply with none of these words is the agent's to run.
  */
 const PERSON_ONLY_REASON =
-  /credential|password|passphrase|secret|\btoken|\b2fa\b|\bmfa\b|\bdevice\b|phone|android|tablet|account|sign(?:ed)?[- ]?in|log(?:ged)?[- ]?in|only you|you hold|your (?:mac|machine|laptop|computer|keychain)|\bsudo\b/i
+  /credential|password|passphrase|secret|\btoken|\b2fa\b|\bmfa\b|\bdevice\b|phone|android|tablet|account|sign(?:ed)?[- ]?in|log(?:ged)?[- ]?in|only you|you hold|your (?:mac|machine|laptop|computer|keychain)|\bsudo\b|\bhas(?:ł|eł)|logowa|zaloguj|zalogowa|poświadcze|\bkont(?:o|a|u|em|ach)\b|telefon|urządzeni|tylko ty\b|tylko u ciebie/i
 
 /** The inbox model's instructions in a host. */
 export function systemText(host: Host): string {
@@ -1044,9 +1044,11 @@ export function questionNumbers(ledger: Ledger, promptTurn: number): Map<string,
 
 const LINE_ANSWER = /(?:^|\n)\s*(?:[QqDd#]\s?)?(\d{1,2})\s*[.):\-–]\s*\S/g
 const INLINE_ANSWER = /\s(?:[QqDd#]\s?)?(\d{1,2})\s*[.)]\s+\S/g
+// A blanket go-ahead, in English or Polish.
 const ACCEPT_ALL =
-  /^\s*(go|go ahead|yes|yep|yeah|sure|ok|okay|sgtm|lgtm|sounds good|do it|proceed|all good|ship it)\s*[.!]*\s*$/i
-const ACCEPT_RECS = /\b(all|both|everything|your)\b[^.\n]{0,40}\b(recommend\w*|recs?|suggest\w*|picks?|calls?)\b/i
+  /^\s*(go|go ahead|yes|yep|yeah|sure|ok|okay|sgtm|lgtm|sounds good|do it|proceed|all good|ship it|tak|okej|dawaj|jasne|zgoda|rób|rób to|działaj|lecimy|śmiało|pasuje|może być)\s*[.!]*\s*$/i
+const ACCEPT_RECS =
+  /\b(all|both|everything|your)\b[^.\n]{0,40}\b(recommend\w*|recs?|suggest\w*|picks?|calls?)\b|\b(wszystk\w*|obie|obydwie|twoj\w*)\b[^.\n]{0,40}\b(rekomend|propozycj|propon|sugest|sugeruj)|\b(jak|zgodnie z)\b[^.\n]{0,20}\b(rekomend|propozycj|propon|sugest|sugeruj)/i
 
 /**
  * The note attached to the person's prompt when it answers open items:

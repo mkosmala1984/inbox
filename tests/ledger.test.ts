@@ -176,6 +176,21 @@ describe('parseReply', () => {
     ])
   })
 
+  test('a Polish reason that only the person can run it makes a terminal step, and a word that only contains one does not', () => {
+    const steps = (reply: string) =>
+      parseReply(
+        ['NEW: do | - | Run the script | - | -', 'HELP: new 1 | terminal | ./scripts/migrate.sh | script'].join('\n'),
+        `${reply} \`./scripts/migrate.sh\``,
+      )?.added[0]?.helps[0]?.kind
+    const cases: [string, 'run' | 'terminal'][] = [
+      ['Tylko ty masz hasło do produkcji, więc uruchom sam', 'terminal'],
+      ['To wymaga zalogowania na twoje konto, uruchom', 'terminal'],
+      ['Potrzebne są dane logowania, uruchom', 'terminal'],
+      ['Uruchom, gdy chcesz załadować kontakty', 'run'],
+    ]
+    for (const [reply, kind] of cases) expect([reply, steps(reply)]).toEqual([reply, kind])
+  })
+
   test('a terminal step in a reply that gives no reason only the person can run it is the agent’s to run', () => {
     const reply = 'Run `./scripts/load.sh` when you want the data loaded; it takes about a minute.'
     const u = parseReply(
@@ -610,6 +625,23 @@ describe('answerNote', () => {
 
   test('offers the recommendations for a bare "go"', () => {
     expect(answerNote({ ...ledger, turn: 2 }, 'go')).toContain('recommended: Yes')
+  })
+
+  test('offers the recommendations for a Polish go-ahead, but not for one with a condition', () => {
+    for (const text of [
+      'tak',
+      'Dawaj!',
+      'rób',
+      'zgoda',
+      'śmiało',
+      'rób wszystkie twoje rekomendacje',
+      'zgodnie z rekomendacjami',
+    ])
+      expect([text, answerNote({ ...ledger, turn: 2 }, text)]).toEqual([
+        text,
+        expect.stringContaining('recommended: Yes'),
+      ])
+    expect(answerNote({ ...ledger, turn: 2 }, 'tak, ale najpierw popraw toolbar')).toBe(null)
   })
 
   test('ignores numbers once the batch is a turn old', () => {
